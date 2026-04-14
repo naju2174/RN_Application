@@ -6,8 +6,10 @@ import {
   View,
   Button,
   TextInput,
-  ScrollView
+  FlatList
 } from 'react-native';
+
+let goalIdCounter = 0;
 
 export default function App() {
   const [enteredGoalText, setEnteredGoalText] = useState('');
@@ -27,7 +29,7 @@ export default function App() {
 
     setCourseGoals((currentValue) => [
       ...currentValue,
-      { id: Date.now().toString(), text: enteredGoalText }
+      { id: (++goalIdCounter).toString(), text: enteredGoalText }
     ]);
 
     setEnteredGoalText(''); // clear input
@@ -47,14 +49,16 @@ export default function App() {
         <Button title="Submit" onPress={buttonPressedHandler} />
       </View>
 
-      <ScrollView style={styles.goalListStyle}>
-        {courseGoals.map((goal) => (
-          <View key={goal.id} style={styles.goalItem}>
-            <Text style={styles.goalText}>{goal.text}</Text>
+      <FlatList
+        style={styles.goalListStyle}
+        data={courseGoals}
+        keyExtractor={(item, index) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.goalItem}>
+            <Text style={styles.goalText}>{item.text}</Text>
           </View>
-        ))}
-      </ScrollView>
-
+        )}
+      />
       <StatusBar style="auto" />
     </View>
   );
